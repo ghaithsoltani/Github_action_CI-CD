@@ -31,3 +31,6 @@ jobs:
 
       - name: Fake Test
         run: echo "All tests passed!"
+      
+      - name: Stop and Remove Container
+        run: echo "Stopping and removing container..." && docker stop cicd-prod-container && docker rm cicd-prod-container
