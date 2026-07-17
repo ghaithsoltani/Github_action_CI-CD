@@ -26,11 +26,22 @@ jobs:
       - name: Run container
         run: docker run -d -p 5000:5000 --name cicd-prod-container cicd-prod
         
-      - name: Wait for App
-        run: sleep 5
+      - name: Wait for App (Fail if not ready)
+        run: 
+          for i in {1..10}; do
+            if curl -f http://localhost:5000; then
+              echo "App is ready!"
+              exit 0
+            fi
+            echo "Waiting for app to be ready..."
+            sleep 5
+          done
+          echo "App did not become ready in time."
+          exit 1
 
-      - name: Fake Test
-        run: echo "All tests passed!"
-      
-      - name: Stop and Remove Container
-        run: echo "Stopping and removing container..." && docker stop cicd-prod-container && docker rm cicd-prod-container
+      - name: Real Health check
+        run: curl -f http://localhost:5000 
+
+      - name: Cleanup container
+        run: docker stop prod-container && docker rm prod-container
+    
