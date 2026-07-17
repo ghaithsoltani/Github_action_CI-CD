@@ -45,3 +45,6 @@ jobs:
       - name: Cleanup container
         if: always()
         run: docker stop cicd-prod-container && docker rm cicd-prod-container
+
+
+        
